@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Text lead</title>
+  <style>
+    body{margin:0;background:#f4f5f8;font-family:Arial,Helvetica,sans-serif;color:#222}
+    .card{max-width:420px;margin:24px auto;background:#fff;border:1px solid #e5e5e5;border-radius:12px;overflow:hidden}
+    .head{background:#14213D;color:#fff;padding:18px;text-align:center;font-size:18px;font-weight:bold}
+    .body{padding:20px;text-align:center}
+    .to{font-size:14px;color:#666}
+    .phone{font-size:20px;font-weight:bold;margin:4px 0 18px}
+    .btn{display:block;background:#2E8FD0;color:#fff;text-decoration:none;padding:16px;border-radius:10px;font-size:18px;font-weight:bold}
+    .hint{font-size:12px;color:#888;margin:20px 0 6px}
+    .msg{font-size:13px;text-align:left;background:#f7f7f9;border-radius:8px;padding:10px;white-space:pre-wrap}
+    .copy{margin-top:10px;background:#fff;border:1px solid #14213D;color:#14213D;border-radius:8px;padding:10px 14px;font-size:14px;font-weight:bold}
+    .foot{font-size:11px;color:#aaa;text-align:center;padding:10px}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="head">Text lead</div>
+    <div class="body" id="app">
+      <div class="to">Send a text to</div>
+      <div class="phone" id="phone"></div>
+      <a class="btn" id="go" href="#">Open Messages</a>
+      <div class="hint">If Messages does not open, copy the message:</div>
+      <div class="msg" id="msg"></div>
+      <button class="copy" id="copy" type="button">Copy message</button>
+    </div>
+    <div class="foot">MN Creative</div>
+  </div>
+
+  <script>
+    // Uso: sms.html?p=+14045551234&m=Hola%20Maria...
+    // p = teléfono del lead, m = mensaje ya redactado (viene del correo).
+    var q = new URLSearchParams(location.search);
+    var phone = (q.get('p') || '').replace(/[^\d+]/g, '');
+    var msg = q.get('m') || '';
+
+    if (!/^\+?\d{7,15}$/.test(phone)) {
+      document.getElementById('app').textContent = 'Invalid link.';
+    } else {
+      document.getElementById('phone').textContent = phone;
+      document.getElementById('msg').textContent = msg;
+      // "?&body=" funciona tanto en Android como en iPhone
+      document.getElementById('go').href = 'sms:' + phone + '?&body=' + encodeURIComponent(msg);
+      document.getElementById('copy').onclick = function () {
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(msg).then(function () {
+            document.getElementById('copy').textContent = 'Copied';
+          });
+        }
+      };
+    }
+  </script>
+</body>
+</html>
